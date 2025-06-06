@@ -1,25 +1,12 @@
 package com.example.auth;
 
-import org.keycloak.authentication.Authenticator;
-import org.keycloak.authentication.AuthenticatorFactory;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.Config;
-import org.keycloak.models.KeycloakSessionFactory;
+import org.keycloak.authentication.ConfigurableAuthenticatorFactory;
+import org.keycloak.models.AuthenticationExecutionModel;
 
 import java.util.List;
 
-public class CustomAuthenticatorFactory implements AuthenticatorFactory {
+public class CustomAuthenticatorFactory implements ConfigurableAuthenticatorFactory {
     public static final String ID = "custom-authenticator";
-
-    @Override
-    public String getId() {
-        return ID;
-    }
-
-    @Override
-    public Authenticator create(KeycloakSession session) {
-        return new CustomAuthenticator();
-    }
 
     @Override
     public String getDisplayType() {
@@ -32,16 +19,9 @@ public class CustomAuthenticatorFactory implements AuthenticatorFactory {
     }
 
     @Override
-    public boolean isConfigurable() { return false; }
-
-    @Override
-    public void init(Config.Scope scope) {}
-
-    @Override
-    public void postInit(KeycloakSessionFactory factory) {}
-
-    @Override
-    public void close() {}
+    public boolean isConfigurable() {
+        return false;
+    }
 
     @Override
     public List<org.keycloak.provider.ProviderConfigProperty> getConfigProperties() {
@@ -59,15 +39,10 @@ public class CustomAuthenticatorFactory implements AuthenticatorFactory {
     }
 
     @Override
-    public boolean isRequirementChoicesAllowed() {
-        return true;
-    }
-
-    @Override
-    public org.keycloak.authentication.AuthenticatorRequirement[] getRequirementChoices() {
-        return new org.keycloak.authentication.AuthenticatorRequirement[]{
-                org.keycloak.authentication.AuthenticatorRequirement.REQUIRED,
-                org.keycloak.authentication.AuthenticatorRequirement.DISABLED
+    public AuthenticationExecutionModel.Requirement[] getRequirementChoices() {
+        return new AuthenticationExecutionModel.Requirement[]{
+                AuthenticationExecutionModel.Requirement.REQUIRED,
+                AuthenticationExecutionModel.Requirement.DISABLED
         };
     }
 }
