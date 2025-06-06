@@ -1,11 +1,18 @@
 package com.example.auth;
 
-import org.keycloak.authentication.ConfigurableAuthenticatorFactory;
+import org.keycloak.authentication.Authenticator;
+import org.keycloak.authentication.AuthenticatorFactory;
+import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.AuthenticationExecutionModel;
+import org.keycloak.provider.ProviderConfigProperty;
+import org.keycloak.provider.ProviderFactory;
 
+import org.keycloak.Config;
+import java.util.ArrayList;
 import java.util.List;
 
-public class CustomAuthenticatorFactory implements ConfigurableAuthenticatorFactory {
+public class CustomAuthenticatorFactory implements AuthenticatorFactory, ProviderFactory<Authenticator> {
     public static final String ID = "custom-authenticator";
 
     @Override
@@ -24,8 +31,8 @@ public class CustomAuthenticatorFactory implements ConfigurableAuthenticatorFact
     }
 
     @Override
-    public List<org.keycloak.provider.ProviderConfigProperty> getConfigProperties() {
-        return null;
+    public List<ProviderConfigProperty> getConfigProperties() {
+        return new ArrayList<>(); // Возвращаем пустой список, если нет конфигурации
     }
 
     @Override
@@ -44,5 +51,30 @@ public class CustomAuthenticatorFactory implements ConfigurableAuthenticatorFact
                 AuthenticationExecutionModel.Requirement.REQUIRED,
                 AuthenticationExecutionModel.Requirement.DISABLED
         };
+    }
+
+    @Override
+    public Authenticator create(KeycloakSession session) {
+        return new CustomAuthenticator(); // Предполагается, что у вас есть класс CustomAuthenticator
+    }
+
+    @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public void init(Config.Scope config) {
+        // Инициализация, если требуется
+    }
+
+    @Override
+    public void postInit(KeycloakSessionFactory factory) {
+        // Действия после инициализации, если требуется
+    }
+
+    @Override
+    public void close() {
+        // Освобождение ресурсов, если требуется
     }
 }
